@@ -29,7 +29,7 @@ public class UserService
                 Timeout = TimeSpan.FromSeconds(10)
             };
             // var createUser = new UserRequest { Configuration = "Kenny" + Guid.NewGuid().ToString().Split('-')[0] };
-            var createUser = new UserRequest { Configuration = new JsonElement()};
+            var createUser = new CreateItemRequest { Configuration = new JsonElement()};
             var response = await http.PostAsJsonAsync($"{sessionId}/users", createUser);
 
             if (response.StatusCode != HttpStatusCode.OK)

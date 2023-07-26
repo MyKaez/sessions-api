@@ -9,7 +9,15 @@ public abstract class BaseController : Controller
     protected IActionResult Result<T>(Result<T> result, Func<T, object> ok)
     {
         return result.Match<IActionResult>(
-            res => base.Ok(ok(res)),
+            res =>
+            {
+                var dto = ok(res);
+
+                if (dto is IReadOnlyCollection<T> coll)
+                    dto = new List<T>(coll);
+                
+                return base.Ok(dto);
+            },
             err =>
             {
                 if (ReferenceEquals(err, NotFoundResult.Obj))

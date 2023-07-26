@@ -3,8 +3,8 @@ using Application.Queries;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Service.Models;
 using Service.Models.Requests;
+using Service.Models.Responses;
 
 namespace Service.Controllers;
 
@@ -26,7 +26,9 @@ public class SessionController : BaseController
         var query = new GetSessions.Query();
         var res = await _mediator.Send(query);
 
-        return Result(res, session => _mapper.Map<SessionDto[]>(session));
+        return Result(res,
+            session => _mapper.Map<SessionDto[]>(session)
+        );
     }
 
     [HttpGet("{id:guid}")]
@@ -43,21 +45,25 @@ public class SessionController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] SessionRequest request)
+    public async Task<IActionResult> Post([FromBody] CreateSessionRequest request)
     {
-        var cmd = new RegisterSession.Command(request.Configuration);
+        var cmd = new CreateSession.Command(request.Configuration);
         var res = await _mediator.Send(cmd);
 
-        return Result(res, session => _mapper.Map<SessionControlDto>(session));
+        return Result(res,
+            session => _mapper.Map<SessionControlDto>(session)
+        );
     }
 
     [HttpPost("{sessionId:guid}")]
-    public async Task<IActionResult> Post(Guid sessionId, [FromBody] SessionUpdateRequest request)
+    public async Task<IActionResult> Post(Guid sessionId, [FromBody] UpdateSessionRequest request)
     {
         var cmd = new UpdateSession.Command(sessionId, request.ControlId, request.Configuration);
         var res = await _mediator.Send(cmd);
 
-        return Result(res, session => _mapper.Map<SessionDto>(session));
+        return Result(res,
+            session => _mapper.Map<SessionDto>(session)
+        );
     }
 
     [HttpGet("{sessionId:guid}/users")]
@@ -66,15 +72,19 @@ public class SessionController : BaseController
         var query = new GetSessionUsers.Query(sessionId);
         var res = await _mediator.Send(query);
 
-        return Result(res, user => _mapper.Map<UserDto[]>(user));
+        return Result(res, items =>
+            _mapper.Map<ItemDto[]>(items)
+        );
     }
 
-    [HttpPost("{sessionId:guid}/users")]
-    public async Task<IActionResult> Post(Guid sessionId, [FromBody] UserRequest request)
+    [HttpPost("{sessionId:guid}/items")]
+    public async Task<IActionResult> Post(Guid sessionId, [FromBody] CreateItemRequest request)
     {
-        var cmd = new RegisterItem.Command(sessionId, request.Configuration);
+        var cmd = new CreateItem.Command(sessionId, request.Configuration);
         var res = await _mediator.Send(cmd);
 
-        return Result(res, user => _mapper.Map<UserControlDto>(user));
+        return Result(res,
+            item => _mapper.Map<ItemControlDto[]>(item)
+        );
     }
 }

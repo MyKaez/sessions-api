@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Models;
 using Service.Models;
+using Service.Models.Responses;
 
 namespace Service.Profiles;
 
@@ -14,7 +15,7 @@ public class ResponseProfile : Profile
         CreateMap<Session, SessionControlDto>()
             .ForMember(p => p.ExpirationTime,
                 opt => opt.MapFrom(p => p.ExpiresAt));
-        CreateMap<Item, UserDto>();
-        CreateMap<Item, UserControlDto>();
+        CreateMap<Item, ItemDto>();
+        CreateMap<Item, ItemControlDto>();
     }
 }

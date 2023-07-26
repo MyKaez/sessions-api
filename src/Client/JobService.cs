@@ -28,7 +28,7 @@ public class JobService
                 Timeout = TimeSpan.FromSeconds(10)
             };
 
-            var createSession = new SessionRequest
+            var createSession = new CreateSessionRequest
             {
                 // Name = "Kenny" + DateTime.Now,
                 Configuration = null

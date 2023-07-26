@@ -6,7 +6,7 @@ using Domain.Models;
 
 namespace Application.Commands;
 
-public static class RegisterItem
+public static class CreateItem
 {
     public record Command(Guid SessionId, JsonElement Configuration) : Request<Item>;
 

@@ -11,7 +11,7 @@ public static class HttpClientExtensions
     public static async Task<SessionControl> CreateSession(this HttpClient client)
     {
         // var req = new SessionRequest { Name = "This is some super nice testing session" };
-        var req = new SessionRequest { };
+        var req = new CreateSessionRequest { };
         var res = await client.PostAsJsonAsync("v1/sessions", req);
         var session = await res.Content.ReadFromJsonAsync<SessionControl>(Application.Defaults.Options);
 
@@ -20,12 +20,12 @@ public static class HttpClientExtensions
         return session;
     }
 
-    public static async Task<UserControl> CreateUser(this HttpClient client, Session session, string userName = "Sarah")
+    public static async Task<ItemControl> CreateUser(this HttpClient client, Session session, string userName = "Sarah")
     {
         // var req = new UserRequest { Configuration = userName };
-        var req = new UserRequest { Configuration = new JsonElement()};
+        var req = new CreateItemRequest { Configuration = new JsonElement()};
         var res = await client.PostAsJsonAsync($"v1/sessions/{session.Id}/users", req);
-        var user = await res.Content.ReadFromJsonAsync<UserControl>(Application.Defaults.Options);
+        var user = await res.Content.ReadFromJsonAsync<ItemControl>(Application.Defaults.Options);
 
         Assert.NotNull(user);
 

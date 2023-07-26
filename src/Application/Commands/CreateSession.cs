@@ -6,7 +6,7 @@ using Domain.Models;
 
 namespace Application.Commands;
 
-public static class RegisterSession
+public static class CreateSession
 {
     public record Command(JsonElement? Configuration) : Request<Session>;
 

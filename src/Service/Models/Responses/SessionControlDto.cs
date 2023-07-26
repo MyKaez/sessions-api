@@ -1,4 +1,4 @@
-﻿namespace Service.Models;
+﻿namespace Service.Models.Responses;
 
 public record SessionControlDto : SessionDto
 {

@@ -2,7 +2,7 @@
 
 namespace Service.Models.Requests;
 
-public record SessionRequest
+public record CreateSessionRequest
 {
     public JsonElement? Configuration { get; init; }
 }
