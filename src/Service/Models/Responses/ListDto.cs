@@ -2,5 +2,5 @@
 
 public record ListDto<T>(IReadOnlyCollection<T> Data)
 {
-    public int Count => Data.Count;
+    public int Total => Data.Count;
 }
