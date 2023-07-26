@@ -27,7 +27,7 @@ public class SessionController : BaseController
         var res = await _mediator.Send(query);
 
         return Result(res,
-            session => _mapper.Map<SessionDto[]>(session)
+            session => _mapper.Map<SessionDto[]>(session).ToListDto()
         );
     }
 
@@ -66,14 +66,14 @@ public class SessionController : BaseController
         );
     }
 
-    [HttpGet("{sessionId:guid}/users")]
-    public async Task<IActionResult> GetUsers(Guid sessionId)
+    [HttpGet("{sessionId:guid}/items")]
+    public async Task<IActionResult> GetItems(Guid sessionId)
     {
         var query = new GetSessionUsers.Query(sessionId);
         var res = await _mediator.Send(query);
 
         return Result(res, items =>
-            _mapper.Map<ItemDto[]>(items)
+            _mapper.Map<ItemDto[]>(items).ToListDto()
         );
     }
 
@@ -84,7 +84,7 @@ public class SessionController : BaseController
         var res = await _mediator.Send(cmd);
 
         return Result(res,
-            item => _mapper.Map<ItemControlDto[]>(item)
+            item => _mapper.Map<ItemControlDto>(item)
         );
     }
 }

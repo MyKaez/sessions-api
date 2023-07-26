@@ -1,5 +1,7 @@
-﻿using Application.Models;
+﻿using System.Collections;
+using Application.Models;
 using Microsoft.AspNetCore.Mvc;
+using Service.Models.Responses;
 using NotFoundResult = Application.Models.NotFoundResult;
 
 namespace Service.Controllers;
@@ -12,10 +14,6 @@ public abstract class BaseController : Controller
             res =>
             {
                 var dto = ok(res);
-
-                if (dto is IReadOnlyCollection<T> coll)
-                    dto = new List<T>(coll);
-                
                 return base.Ok(dto);
             },
             err =>
