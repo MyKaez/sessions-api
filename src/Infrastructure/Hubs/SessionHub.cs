@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Infrastructure.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using Polly;
@@ -13,17 +15,15 @@ namespace Infrastructure.Hubs;
 public class SessionHub : Hub
 {
     private readonly ILogger<SessionHub> _logger;
-    private readonly IServiceProvider _serviceProvider;
 
     private readonly AsyncPolicy _retryPolicy = Policy
         .Handle<SqlException>(e =>
             e.Message.Contains("deadlocked on lock resources with another process"))
         .WaitAndRetryAsync(5, current => TimeSpan.FromMilliseconds(50 * (current + 1)));
 
-    public SessionHub(ILogger<SessionHub> logger, IServiceProvider serviceProvider)
+    public SessionHub(ILogger<SessionHub> logger)
     {
         _logger = logger;
-        _serviceProvider = serviceProvider;
     }
 
     public override Task OnConnectedAsync()
@@ -31,6 +31,18 @@ public class SessionHub : Hub
         _logger.LogInformation("Initiated connection {Connection}", Context.ConnectionId);
 
         return base.OnConnectedAsync();
+    }
+
+    public async Task<bool> RegisterSession(Guid sessionId, [FromServices] IConnectionService connectionService)
+    {
+        await Groups.AddToGroupAsync(Context.ConnectionId, sessionId.ToString());
+        return await connectionService.CreateSession(sessionId, Context.ConnectionId);
+    }
+    
+    public async Task<bool> RegisterItem(Guid sessionId, Guid itemId, [FromServices] IConnectionService connectionService)
+    {
+        await Groups.AddToGroupAsync(Context.ConnectionId, sessionId.ToString());
+        return await connectionService.CreateSessionItem(sessionId, itemId, Context.ConnectionId);
     }
     //
     // public override async Task OnDisconnectedAsync(Exception? exception)
@@ -60,19 +72,6 @@ public class SessionHub : Hub
     //     });
     // }
     
-    // public async Task CreateItem(Guid sessionId)
-    // {
-    //     await _retryPolicy.ExecuteAsync(async () =>
-    //     {
-    //         var connectionService = _serviceProvider.GetRequiredService<IConnectionService>();
-    //
-    //         await connectionService.Update(Context.ConnectionId, userId);
-    //
-    //         _logger.LogInformation(
-    //             "User {UserID} was registered for Connection {Connection}", userId, Context.ConnectionId);
-    //     });
-    // }
-
     public Task Alive(Guid? userId)
     {
         if (userId.HasValue)
