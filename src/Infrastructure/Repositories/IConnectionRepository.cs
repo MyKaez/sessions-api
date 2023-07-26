@@ -4,7 +4,7 @@ namespace Infrastructure.Repositories;
 
 public interface IConnectionRepository
 {
-    Task<ICollection<Connection>> GetAll();
+    Task<ICollection<SessionItem>> GetAll();
 
     Task Add(string connectionId, Guid sessionId);
 
@@ -12,5 +12,5 @@ public interface IConnectionRepository
 
     Task Remove(string connectionId);
 
-    Task<Connection?> Get(string connectionId);
+    Task<SessionItem?> Get(string connectionId);
 }

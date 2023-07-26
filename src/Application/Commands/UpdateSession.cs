@@ -31,7 +31,10 @@ public static class UpdateSession
             if (request.ControlId != session.ControlId)
                 return NotAuthorized();
 
-            if (await _sessionService.Update(session, request.Configuration, cancellationToken))
+            if (await _sessionService.Update(session, s =>
+                {
+                    //s with {Configuration = request.Configuration}
+                }, cancellationToken))
                 return session;
 
             return BadRequest("Failed to update session");

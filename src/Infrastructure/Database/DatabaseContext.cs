@@ -8,63 +8,34 @@ public class DatabaseContext : DbContext
     {
     }
 
-    public DbSet<Session> Sessions { get; set; }
-    
-    public DbSet<Connection> Connections { get; set; }
+    public DbSet<Session> Sessions { get; set; } = null!;
 
-    public DbSet<Interaction> Interactions { get; set; }
-
-    public DbSet<User> Users { get; set; }
-
-    public DbSet<Message> Messages { get; set; }
+    public DbSet<SessionItem> SessionItems { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
+        modelBuilder.HasDefaultSchema("sa");
 
         modelBuilder.Entity<Session>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Name).IsRequired();
-            entity.Property(e => e.Status).IsRequired();
+            entity.Property(e => e.ControlId).HasMaxLength(256).IsRequired();
+            entity.Property(e => e.Configuration).HasMaxLength(4096);
             entity.Property(e => e.Created).IsRequired();
             entity.Property(e => e.Updated).IsRequired();
             entity.Property(e => e.ExpiresAt).IsRequired();
-            entity.HasMany(e => e.Interactions).WithOne(i => i.Session);
-            entity.HasMany(e => e.Messages).WithOne(i => i.Session);
-            entity.HasMany(e => e.Connections).WithOne(i => i.Session);
         });
 
-        modelBuilder.Entity<Connection>(entity =>
+        modelBuilder.Entity<SessionItem>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.HasOne<Session>(e => e.Session).WithMany(e => e.Connections);
-            entity.HasOne<User>(e => e.User).WithOne(e => e.Connection);
-        });
-
-        modelBuilder.Entity<Interaction>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.HasOne(d => d.Session).WithMany(p => p.Interactions);
-            entity.HasOne(d => d.User).WithMany(p => p.Interactions);
-        });
-
-        modelBuilder.Entity<User>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Name).IsRequired();
-            entity.HasOne(e => e.Connection).WithOne(i => i.User)
-                .HasForeignKey<User>(nameof(User.ConnectionId));
-            entity.HasMany(e => e.Interactions).WithOne(i => i.User);
-            entity.HasMany(e => e.Messages).WithOne(i => i.User);
-        });
-
-        modelBuilder.Entity<Message>(entity =>
-        {
-            entity.HasKey(e => e.Id);
+            entity.HasOne(e => e.Session).WithMany(e => e.Items)
+                .HasForeignKey(nameof(SessionItem.SessionId));
+            entity.Property(e => e.ControlId).HasMaxLength(256).IsRequired();
+            entity.Property(e => e.ConnectionId).HasMaxLength(256).IsRequired();
+            entity.Property(e => e.Configuration).HasMaxLength(4096).IsRequired();
             entity.Property(e => e.Created).IsRequired();
-            entity.HasOne<Session>(e => e.Session).WithMany(e => e.Messages);
-            entity.HasOne<User>(e => e.User).WithMany(e => e.Messages);
+            entity.Property(e => e.Updated).IsRequired();
         });
     }
 }

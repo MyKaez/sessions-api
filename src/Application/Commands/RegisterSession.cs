@@ -8,7 +8,7 @@ namespace Application.Commands;
 
 public static class RegisterSession
 {
-    public record Command(string Name, JsonElement? Configuration) : Request<Session>;
+    public record Command(JsonElement? Configuration) : Request<Session>;
 
     public class Handler : RequestHandler<Command, Session>
     {
@@ -22,12 +22,7 @@ public static class RegisterSession
         public override async Task<Result<Session>> Handle(
             Command request, CancellationToken cancellationToken)
         {
-            var sessions = await _sessionService.GetAll(cancellationToken);
-
-            if (sessions.Any(session => session.Name.Equals(request.Name, StringComparison.OrdinalIgnoreCase)))
-                return BadRequest("Session name already exists");
-            
-            var session = await _sessionService.CreateSession(request.Name, request.Configuration, cancellationToken);
+            var session = await _sessionService.CreateSession(request.Configuration, cancellationToken);
 
             return session ?? NotFound();
         }

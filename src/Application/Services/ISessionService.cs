@@ -9,11 +9,11 @@ public interface ISessionService
 
     Task<IEnumerable<Session>> GetAll(CancellationToken cancellationToken);
 
-    Task<Session?> CreateSession(string name, JsonElement? configuration, CancellationToken cancellationToken);
+    Task<Session?> CreateSession(JsonElement? configuration, CancellationToken cancellationToken);
 
     Task DeleteUser(Guid sessionId, Guid userId, CancellationToken cancellationToken);
     
     Task DeleteSession(Guid sessionId, CancellationToken cancellationToken);
     
-    Task<bool> Update(Session session, JsonElement configuration, CancellationToken cancellationToken);
+    Task<bool> Update(Session session, Action<Session> update, CancellationToken cancellationToken);
 }

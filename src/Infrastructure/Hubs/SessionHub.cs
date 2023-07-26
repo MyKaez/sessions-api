@@ -1,5 +1,4 @@
 ﻿using Application.Services;
-using Infrastructure.Services;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,79 +34,46 @@ public class SessionHub : Hub
 
         return base.OnConnectedAsync();
     }
-
-    public override async Task OnDisconnectedAsync(Exception? exception)
-    {
-        if (exception is not null)
-            _logger.LogError(exception, "Erroneously disconnected connection {Connection}", Context.ConnectionId);
-
-        await _retryPolicy.ExecuteAsync(async () =>
-        {
-            var connectionService = _serviceProvider.GetRequiredService<IConnectionService>();
-            var connection = await connectionService.Get(Context.ConnectionId);
-
-            if (connection is null)
-            {
-                _logger.LogInformation("Disconnected connection {Connection}", Context.ConnectionId);
-            }
-            else
-            {
-                _logger.LogInformation("Session {SessionID} disconnected from {Connection}",
-                    connection.SessionId, Context.ConnectionId);
-
-                if (connection.UserId.HasValue)
-                    await DisconnectUser(connection.SessionId, connection.UserId.Value);
-                else
-                    await connectionService.Remove(Context.ConnectionId);
-            }
-        });
-
-        await base.OnDisconnectedAsync(exception);
-    }
-
-    private async Task DisconnectUser(Guid sessionId, Guid userId)
-    {
-        await _retryPolicy.ExecuteAsync(async () =>
-        {
-            var sessionService = _serviceProvider.GetRequiredService<ISessionService>();
-
-            await sessionService.DeleteUser(sessionId, userId, CancellationToken.None);
-        });
-    }
-
-    /// <summary>
-    ///     This method is meant to be called by the frontend. In order to interact properly with the api, the session needs to
-    ///     be registered here.
-    /// </summary>
-    public async Task RegisterSession(Guid sessionId)
-    {
-        await _retryPolicy.ExecuteAsync(async () =>
-        {
-            var connectionService = _serviceProvider.GetRequiredService<IConnectionService>();
-
-            await connectionService.Add(Context.ConnectionId, sessionId);
-
-            _logger.LogInformation(
-                "Session {SessionID} was registered for Connection {Connection}", sessionId, Context.ConnectionId);
-        });
-    }
-
-    /// <summary>
-    ///     This method is meant to be called by the frontend. In order to interact properly with the api, the session needs to
-    ///     be registered here.
-    /// </summary>
-    public async Task RegisterUser(Guid userId)
-    {
-        await _retryPolicy.ExecuteAsync(async () =>
-        {
-            var connectionService = _serviceProvider.GetRequiredService<IConnectionService>();
-
-            await connectionService.Update(Context.ConnectionId, userId);
-
-            _logger.LogInformation(
-                "User {UserID} was registered for Connection {Connection}", userId, Context.ConnectionId);
-        });
-    }
+    //
+    // public override async Task OnDisconnectedAsync(Exception? exception)
+    // {
+    //     if (exception is not null)
+    //         _logger.LogError(exception, "Erroneously disconnected connection {Connection}", Context.ConnectionId);
+    //
+    //     await _retryPolicy.ExecuteAsync(async () =>
+    //     {
+    //         var connectionService = _serviceProvider.GetRequiredService<IConnectionService>();
+    //         var connection = await connectionService.Get(Context.ConnectionId);
+    //
+    //         if (connection is null)
+    //         {
+    //             _logger.LogInformation("Disconnected connection {Connection}", Context.ConnectionId);
+    //         }
+    //         else
+    //         {
+    //             _logger.LogInformation("Session {SessionID} disconnected from {Connection}",
+    //                 connection.SessionId, Context.ConnectionId);
+    //
+    //             if (connection.UserId.HasValue)
+    //                 await DisconnectUser(connection.SessionId, connection.UserId.Value);
+    //             else
+    //                 await connectionService.Remove(Context.ConnectionId);
+    //         }
+    //     });
+    // }
+    
+    // public async Task CreateItem(Guid sessionId)
+    // {
+    //     await _retryPolicy.ExecuteAsync(async () =>
+    //     {
+    //         var connectionService = _serviceProvider.GetRequiredService<IConnectionService>();
+    //
+    //         await connectionService.Update(Context.ConnectionId, userId);
+    //
+    //         _logger.LogInformation(
+    //             "User {UserID} was registered for Connection {Connection}", userId, Context.ConnectionId);
+    //     });
+    // }
 
     public Task Alive(Guid? userId)
     {

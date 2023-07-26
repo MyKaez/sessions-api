@@ -11,7 +11,6 @@ public class RepositoryInstaller : IInstaller
     public void Install(IServiceCollection services, IConfiguration config)
     {
         services.AddTransient<ISessionRepository, SessionRepository>();
-        services.AddTransient<IUserRepository, UserRepository>();
-        services.AddTransient<IConnectionRepository, ConnectionRepository>();
+        services.AddTransient<IItemRepository, ItemRepository>();
     }
 }

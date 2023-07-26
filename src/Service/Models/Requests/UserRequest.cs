@@ -1,6 +1,8 @@
-﻿namespace Service.Models.Requests;
+﻿using System.Text.Json;
+
+namespace Service.Models.Requests;
 
 public record UserRequest
 {
-    public required string Name { get; init; }
+    public required JsonElement Configuration { get; init; }
 }

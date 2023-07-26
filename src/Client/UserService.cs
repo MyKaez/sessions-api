@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
 using Client.Models;
 using Microsoft.AspNetCore.SignalR.Client;
 using Polly;
@@ -27,7 +28,8 @@ public class UserService
                 BaseAddress = new Uri(baseUrl + "v1/sessions/"),
                 Timeout = TimeSpan.FromSeconds(10)
             };
-            var createUser = new UserRequest { Name = "Kenny" + Guid.NewGuid().ToString().Split('-')[0] };
+            // var createUser = new UserRequest { Configuration = "Kenny" + Guid.NewGuid().ToString().Split('-')[0] };
+            var createUser = new UserRequest { Configuration = new JsonElement()};
             var response = await http.PostAsJsonAsync($"{sessionId}/users", createUser);
 
             if (response.StatusCode != HttpStatusCode.OK)

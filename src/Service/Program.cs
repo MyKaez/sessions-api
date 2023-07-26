@@ -19,9 +19,9 @@ builder.Services.AddCors(options =>
             .AllowCredentials()
     )
 );
-builder.Services.AddHostedService<DeleteObsoleteSessions>();
-builder.Services.AddHostedService<SessionUserUpdates>();
-builder.Services.AddHostedService<SessionKeepAliveUpdates>();
+// builder.Services.AddHostedService<DeleteObsoleteSessions>();
+// builder.Services.AddHostedService<SessionUserUpdates>();
+// builder.Services.AddHostedService<SessionKeepAliveUpdates>();
 builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.SetDefaults());
 builder.Services.AddSignalR(options =>
 {

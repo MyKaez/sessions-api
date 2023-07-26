@@ -3,7 +3,6 @@ using AutoMapper;
 using Domain.Models;
 using Infrastructure.Database;
 using Session = Infrastructure.Database.Session;
-using User = Infrastructure.Database.User;
 
 namespace Infrastructure.Profiles;
 
@@ -19,14 +18,11 @@ public class DatabaseProfile : Profile
                         ? JsonDocument.Parse(o.Configuration, default).RootElement
                         : JsonDocument.Parse("{}", default).RootElement)
             );
-        CreateMap<User, Domain.Models.User>()
+        CreateMap<SessionItem, Item>()
             .ForMember(
                 u => u.Configuration,
                 opt => opt.MapFrom(
-                    o => o.Configuration != null
-                        ? JsonDocument.Parse(o.Configuration, default).RootElement
-                        : JsonDocument.Parse("{}", default).RootElement)
+                    o => JsonDocument.Parse(o.Configuration, default).RootElement)
             );
-        CreateMap<Connection, Models.Connection>();
     }
 }

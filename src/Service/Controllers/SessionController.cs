@@ -35,13 +35,17 @@ public class SessionController : BaseController
         var query = new GetSession.Query(id, controlId);
         var res = await _mediator.Send(query);
 
-        return Result(res, session => _mapper.Map<SessionDto>(session));
+        return Result(res,
+            session => controlId is null
+                ? _mapper.Map<SessionDto>(session)
+                : _mapper.Map<SessionControlDto>(session)
+        );
     }
 
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] SessionRequest request)
     {
-        var cmd = new RegisterSession.Command(request.Name, request.Configuration);
+        var cmd = new RegisterSession.Command(request.Configuration);
         var res = await _mediator.Send(cmd);
 
         return Result(res, session => _mapper.Map<SessionControlDto>(session));
@@ -68,7 +72,7 @@ public class SessionController : BaseController
     [HttpPost("{sessionId:guid}/users")]
     public async Task<IActionResult> Post(Guid sessionId, [FromBody] UserRequest request)
     {
-        var cmd = new RegisterUser.Command(sessionId, request.Name);
+        var cmd = new RegisterItem.Command(sessionId, request.Configuration);
         var res = await _mediator.Send(cmd);
 
         return Result(res, user => _mapper.Map<UserControlDto>(user));

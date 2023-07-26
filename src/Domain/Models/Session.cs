@@ -4,7 +4,7 @@ namespace Domain.Models;
 
 public record Session
 {
-    private readonly List<User> _users = new();
+    private readonly List<Item> _users = new();
 
     public required Guid Id { get; init; }
 
@@ -20,15 +20,15 @@ public record Session
 
     public JsonElement? Configuration { get; init; }
 
-    public IEnumerable<User> Users => _users;
+    public IEnumerable<Item> Users => _users;
     
     public DateTime? StartTime { get; set; }
     
     public DateTime? EndTime { get; set; }
 
-    public Session Add(User user)
+    public Session Add(Item item)
     {
-        _users.Add(user);
+        _users.Add(item);
         return this;
     }
 }
