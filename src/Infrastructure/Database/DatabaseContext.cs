@@ -32,16 +32,17 @@ public class DatabaseContext : DbContext
             entity.Property(e => e.ConnectionId).HasMaxLength(256).IsRequired();
             entity.HasOne(e => e.Session)
                 .WithOne(e => e.Connection)
-                .HasForeignKey(nameof(Connection.SessionId));
+                .HasForeignKey<Connection>(nameof(Connection.SessionId));
             entity.HasOne(e => e.SessionItem)
                 .WithOne(e => e.Connection)
-                .HasForeignKey(nameof(Connection.SessionItemId));
+                .HasForeignKey<Connection>(nameof(Connection.SessionItemId));
         });
 
         modelBuilder.Entity<SessionItem>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.HasOne(e => e.Session).WithMany(e => e.Items)
+            entity.HasOne(e => e.Session)
+                .WithMany(e => e.Items)
                 .HasForeignKey(nameof(SessionItem.SessionId));
             entity.Property(e => e.ControlId).HasMaxLength(256).IsRequired();
             entity.Property(e => e.Configuration).HasMaxLength(4096).IsRequired();
