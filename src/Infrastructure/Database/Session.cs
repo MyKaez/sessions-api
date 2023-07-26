@@ -15,4 +15,6 @@ public class Session
     public DateTime Updated { get; set; }
 
     public ICollection<SessionItem> Items { get; set; } = null!;
+    
+    public Connection Connection { get; set; }
 }

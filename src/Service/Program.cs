@@ -42,6 +42,6 @@ app.UseRouting();
 app.UseCors();
 app.UseAuthorization();
 app.MapControllers();
-app.MapHub<SessionHub>("/sessions-hub");
+app.MapHub<SessionHub>("/hub");
 
 app.Run();

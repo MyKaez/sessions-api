@@ -2,5 +2,5 @@
 
 public record SessionControlDto : SessionDto
 {
-    public Guid ControlId { get; init; }
+    public required string ControlId { get; init; }
 }

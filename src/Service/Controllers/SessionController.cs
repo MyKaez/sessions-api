@@ -21,7 +21,7 @@ public class SessionController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> GetAll()
     {
         var query = new GetSessions.Query();
         var res = await _mediator.Send(query);

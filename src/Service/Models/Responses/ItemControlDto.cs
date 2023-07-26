@@ -2,5 +2,5 @@
 
 public record ItemControlDto : ItemDto
 {
-    public Guid ControlId { get; init; }
+    public string ControlId { get; init; }
 }

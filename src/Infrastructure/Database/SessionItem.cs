@@ -19,4 +19,6 @@ public class SessionItem
     public DateTime Created { get; set; }
 
     public DateTime Updated { get; set; }
+
+    public Connection Connection { get; set; } = null!;
 }
